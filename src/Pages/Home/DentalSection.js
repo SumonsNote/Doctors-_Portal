@@ -1,6 +1,6 @@
 import React from 'react';
 import dental from '../../assets/images/treatment.png'
-import PrimaryButton from './PrimaryButton';
+import PrimaryButton from '../Shared/PrimaryButton';
 
 const DentalSection = () => {
     return (

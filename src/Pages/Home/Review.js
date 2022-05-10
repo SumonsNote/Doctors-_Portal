@@ -7,15 +7,15 @@ const Review = ({ review }) => {
                 <p>{review.review}</p>
             </div>
             <div className='flex items-center pl-5'>
-            <div class="avatar">
-                <div class="w-16 rounded-full ring ring-primary ring-offset-base-100 mr-5">
-                    <img src={review.img} alt="" />
+                <div class="avatar">
+                    <div class="w-16 rounded-full ring ring-primary ring-offset-base-100 mr-5">
+                        <img src={review.img} alt="" />
+                    </div>
                 </div>
-            </div>
-            <div className='p-5'>
-                <h2 className='text-xl'>{review.name}</h2>
-                <span>{review.location}</span>
-            </div>
+                <div className='p-5'>
+                    <h2 className='text-xl'>{review.name}</h2>
+                    <span>{review.location}</span>
+                </div>
             </div>
         </div>
     );
