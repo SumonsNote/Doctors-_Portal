@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSignInWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import auth from '../../Firebase.init';
 import { useForm } from "react-hook-form";
 import Loading from '../Shared/Loading';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
     const { register, formState: { errors }, handleSubmit } = useForm();
+    const navigate = useNavigate()
+    const location = useLocation()
+    let from = location.state?.from?.pathname || "/";
 
     const [
         signInWithEmailAndPassword,
@@ -15,6 +18,12 @@ const Login = () => {
         loading,
         error,
     ] = useSignInWithEmailAndPassword(auth);
+
+    useEffect( () =>{
+        if (user || gUser) {
+            navigate(from, { replace: true });
+        }
+    }, [user, gUser, from, navigate])
 
     let signInError;
 
@@ -25,10 +34,6 @@ const Login = () => {
 
     if (error || gError) {
         signInError = <p className='text-red-500'><small>{error?.message || gError?.message}</small></p>
-    }
-
-    if (user || gUser) {
-        console.log(user || gUser);
     }
 
     const onSubmit = data => {
@@ -96,7 +101,7 @@ const Login = () => {
                     </form>
                     <p><small>New to Doctors Portal <Link className='text-primary' to="/signup">Create New Account</Link></small></p>
 
-                    <div class="divider">OR</div>
+                    <div className="divider">OR</div>
                     <button
                         onClick={() => signInWithGoogle()}
                         className="btn btn-outline"
