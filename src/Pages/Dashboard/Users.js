@@ -4,7 +4,7 @@ import Loading from '../Shared/Loading';
 import UserRaw from './UserRaw';
 
 const Users = () => {
-    const { data: users, isLoading } = useQuery('users', () => fetch('http://localhost:5000/users',{
+    const { data: users, isLoading, refetch } = useQuery('users', () => fetch('http://localhost:5000/users',{
         method: 'GET',
         headers: {
             'authorization': `Bearer ${localStorage.getItem('accessToken')}`
@@ -29,7 +29,7 @@ const Users = () => {
                     </thead>
                     <tbody>
                        {
-                           users.map(user => <UserRaw user={user}></UserRaw>)
+                           users.map(user => <UserRaw user={user} refetch={refetch}></UserRaw>)
                        }
                     </tbody>
                 </table>
