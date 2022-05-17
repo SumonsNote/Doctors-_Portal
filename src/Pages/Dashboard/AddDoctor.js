@@ -2,13 +2,53 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
 import Loading from '../Shared/Loading';
+import { toast } from 'react-toastify';
 
 const AddDoctor = () => {
-    const { register, formState: { errors }, handleSubmit } = useForm();
+    const { register, formState: { errors }, handleSubmit, reset } = useForm();
     const { data: service, isLoading } = useQuery('service', () => fetch('http://localhost:5000/service').then(res => res.json()))
 
+    const imageStorageApiKey = '4b58dc1238aefe50344c3b708b4f28e9'
+
     const onSubmit = async data => {
-        console.log('data', data);
+        const image = data.Image[0];
+        const formData = new FormData();
+        formData.append('image', image);
+        const url = `https://api.imgbb.com/1/upload?key=${imageStorageApiKey}`;
+        fetch(url, {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(result => {
+            if(result.success){
+                const img = result.data.url;
+                const doctor = {
+                    name: data.name,
+                    email: data.email,
+                    specialty: data.specialty,
+                    img: img        
+                }
+                fetch('http://localhost:5000/doctor', {
+                    method: "POST",
+                    headers: {
+                        'content-type': 'application/json',
+                        'authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    },
+                    body: JSON.stringify(doctor)
+                })
+                .then(res => res.json())
+                .then(inserted => {
+                    if(inserted.insertedId){
+                        toast.success('Doctor successfully added')
+                        reset()
+                    }
+                    else {
+                        toast.err('Not added, Please try again')
+                    }
+                })
+            }
+        })
     }
 
     if(isLoading){
@@ -63,7 +103,7 @@ const AddDoctor = () => {
                     <label className="label">
                         <span className="label-text">Specialty</span>
                     </label>
-                    <select {...register('specialty')} class="select w-full max-w-xs">
+                    <select {...register('specialty')} class="input input-bordered select w-full max-w-xs">
                     {
                         service?.map(service => <option
                         key={service._id}
@@ -78,7 +118,7 @@ const AddDoctor = () => {
                     </label>
                     <input
                         type="file"
-                        className="input input-bordered w-full max-w-xs"
+                        className="py-4 w-full max-w-xs"
                         {...register("Image", {
                             required: {
                                 value: true,
