@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 
 const AddDoctor = () => {
     const { register, formState: { errors }, handleSubmit, reset } = useForm();
-    const { data: service, isLoading } = useQuery('service', () => fetch('http://localhost:5000/service').then(res => res.json()))
+    const { data: service, isLoading } = useQuery('service', () => fetch('https://dry-tundra-71495.herokuapp.com/service').then(res => res.json()))
 
     const imageStorageApiKey = '4b58dc1238aefe50344c3b708b4f28e9'
 
@@ -29,7 +29,7 @@ const AddDoctor = () => {
                     specialty: data.specialty,
                     img: img        
                 }
-                fetch('http://localhost:5000/doctor', {
+                fetch('https://dry-tundra-71495.herokuapp.com/doctor', {
                     method: "POST",
                     headers: {
                         'content-type': 'application/json',
